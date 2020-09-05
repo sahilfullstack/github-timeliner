@@ -2,10 +2,11 @@ import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { App } from 'components/App';
+// Importing the Bootstrap CSS
 
 export async function serverRenderer() {
   const initialData = {
-    appName: 'Reactful',
+    appName: 'Github Timeliner',
   };
 
   const pageData = {

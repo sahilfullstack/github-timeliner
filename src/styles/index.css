@@ -286,7 +286,14 @@ body {
 
 }
 
+.jumbotron {
+  padding: 1rem 1rem !important;
+}
 
 .jumbotron h1 {
   text-align: center;
+}
+
+.h1, h1 {
+  font-size: 2.0rem !important;
 }

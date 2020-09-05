@@ -7,8 +7,8 @@ export function App({ initialData }) {
   const [count, setCount] = React.useState(0);
   const [data, setData] = React.useState({});
   let myInput = null;
-  var getGitubStuff = (username) => {
-    console.log(username);
+  var getGitubStuff = () => {
+    let username = document.getElementById("input-username").value;
     fetch(`https://api.github.com/users/${username}/repos`)
       .then(response => response.json())
       .then(data => {
@@ -28,11 +28,16 @@ export function App({ initialData }) {
               aria-label="Github Username"
               aria-describedby="basic-addon"
               id="input-username"
+              onKeyDown={(event)=>{
+                if(event.key == "Enter") {
+                  getGitubStuff();
+                }
+              }}
             />
             <InputGroup.Append>
               <Button 
               onClick={()=>{
-                getGitubStuff(document.getElementById("input-username").value);
+                getGitubStuff();
               }}
               variant="outline-secondary">Button</Button>
             </InputGroup.Append>

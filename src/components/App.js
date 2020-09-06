@@ -10,25 +10,35 @@ import {
           Row,
           Col,
           Figure,
-          Form,
-          ListGroup,
-          Image
+          Alert,
+          Toast
         } from 'react-bootstrap';
-import { Typeahead } from 'react-bootstrap-typeahead';
 
 export function App({ initialData }) {
   let DEFAULT_NAME = "Sahil Sarpal";
   let DEFAULT_IMAGE = "https://avatars2.githubusercontent.com/u/44086298?v=4";
   const [count, setCount] = React.useState(0);
-  const [data, setData] = React.useState({});
+  const [data, setData] = React.useState([]);
   const [user_data, setUserData] = React.useState({});
   const [suggested_profile, setSuggestedProfile] = React.useState({img:DEFAULT_IMAGE, name: DEFAULT_NAME});
+  const [alert, setAlertShow] = React.useState({status: false});
 
-  let myInput = null;
+  var checkForErrors = (response) => {
+    if(response.status == 404 || response.status == 403) {
+      setAlertShow({
+        status: true,
+        statusText: response.statusText
+      })
+    }
+  }
+
   var getGitubStuff = () => {
     let username = document.getElementById("input-username").value;
     fetch(`https://api.github.com/users/${username}`)
-      .then(response => response.json())
+      .then(response => {
+        checkForErrors(response);
+        return response.json();
+      })
       .then(data => {
         setUserData(data)
       })
@@ -43,7 +53,10 @@ export function App({ initialData }) {
   var getGitubSuggestion = (username) => {
     fetch(`https://api.github.com/users/${username}`)
       .then(response => {
-        response.json()
+        if(response.staus == 404) {
+          setSuggestedProfile({img:DEFAULT_IMAGE, name: DEFAULT_NAME});
+        }
+        return response.json()
       })
       .then(data => {
         let profile ={img:DEFAULT_IMAGE, name: DEFAULT_NAME};
@@ -62,6 +75,15 @@ export function App({ initialData }) {
 
   return (
     <React.Fragment>
+      {
+         alert.status && <Alert variant="danger" onClose={() => setAlertShow({status: false})} dismissible>
+         <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+         <p>
+          { alert.statusText }
+         </p>
+         </Alert>
+         
+      }    
        <Container >
         <Jumbotron>
           <Container>
@@ -108,7 +130,7 @@ export function App({ initialData }) {
       </Container>
       
       {
-        (count > 0) && 
+    data.length > 0 && user_data &&
 
         <Container >
   <Row>

@@ -10,7 +10,7 @@ export async function serverRenderer() {
   };
 
   const pageData = {
-    title: `Hello ${initialData.appName}`,
+    title: `${initialData.appName}`,
   };
 
   return Promise.resolve({

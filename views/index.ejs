@@ -12,10 +12,39 @@
   <script type="text/javascript">
     window.__R_DATA = <%- serialize({ initialData }, { isJSON: true }); %>
   </script>
+   <script>
+    document.onreadystatechange = function () {
+      var state = document.readyState
+      if (state == 'interactive') {
+          document.getElementById('root').style.visibility="hidden";
+      } else if (state == 'complete') {
+          setTimeout(function(){
+            document.getElementById('interactive');
+            document.getElementById('load').style.visibility="hidden";
+            document.getElementById('root').style.visibility="visible";
+          },1000);
+      }
+    }
+  </script>
+  <style>
+    #root {
+      visibility: hidden;
+    }
+    #load{
+      width:100%;
+      height:100%;
+      position:fixed;
+      z-index:9999;
+      background:url("http://code.jquery.com/mobile/1.3.1/images/ajax-loader.gif") no-repeat center center rgba(0,0,0,0.25)
+    }
+  </style>
 </head>
 <body>
+  <div id="load"></div>
   <div id="root"><%- initialMarkup -%></div>
   <script src="/bundles/<%- gVars['vendor'] -%>" type="text/javascript"></script>
   <script src="/bundles/<%- gVars['main'][1] -%>" type="text/javascript"></script>
+
+ 
 </body>
 </html>

@@ -9,14 +9,21 @@ import {
           Card,
           Row,
           Col,
-          Figure
+          Figure,
+          Form,
+          ListGroup,
+          Image
         } from 'react-bootstrap';
-
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 export function App({ initialData }) {
+  let DEFAULT_NAME = "Sahil Sarpal";
+  let DEFAULT_IMAGE = "https://avatars2.githubusercontent.com/u/44086298?v=4";
   const [count, setCount] = React.useState(0);
   const [data, setData] = React.useState({});
   const [user_data, setUserData] = React.useState({});
+  const [suggested_profile, setSuggestedProfile] = React.useState({img:DEFAULT_IMAGE, name: DEFAULT_NAME});
+
   let myInput = null;
   var getGitubStuff = () => {
     let username = document.getElementById("input-username").value;
@@ -33,32 +40,70 @@ export function App({ initialData }) {
       })
   }
 
-  return (
-    <div>
+  var getGitubSuggestion = (username) => {
+    fetch(`https://api.github.com/users/${username}`)
+      .then(response => {
+        response.json()
+      })
+      .then(data => {
+        let profile ={img:DEFAULT_IMAGE, name: DEFAULT_NAME};
+        if(data) {
+          profile = {
+            img: data.avatar_url,
+            name: data.name
+          };      
+        }
+        setSuggestedProfile(profile);
+      })
+      .catch(error => {
+        setSuggestedProfile({img:DEFAULT_IMAGE, name: DEFAULT_NAME});
+      })
+  }
 
+  return (
+    <React.Fragment>
        <Container >
         <Jumbotron>
-          <h1>{initialData.appName}</h1>
-          <InputGroup className="mb-3">
-            <FormControl
-              placeholder="Github Username"
-              aria-label="Github Username"
-              aria-describedby="basic-addon"
-              id="input-username"
-              onKeyDown={(event)=>{
-                if(event.key == "Enter") {
-                  getGitubStuff();
-                }
-              }}
-            />
-            <InputGroup.Append>
-              <Button 
-              onClick={()=>{
-                getGitubStuff();
-              }}
-              variant="outline-secondary">Button</Button>
-            </InputGroup.Append>
-          </InputGroup>
+          <Container>
+            <Row>
+              <Col xs={12} md={10}>
+                <h1>{initialData.appName}</h1>
+                <InputGroup>
+                  <FormControl
+                    placeholder="Github Username"
+                    aria-label="Github Username"
+                    aria-describedby="basic-addon"
+                    id="input-username"
+                    onChange={(event)=>{
+                      if(event && event.target) {
+                        getGitubSuggestion(event.target.value);
+                      }
+                    }}
+                    onKeyDown={(event)=>{
+                      if(event.key == "Enter") {
+                        getGitubStuff();
+                      }
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Button 
+                    onClick={()=>{
+                      getGitubStuff();
+                    }}
+                    variant="outline-secondary">Button</Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </Col>
+              <Col xs={8} md={2}>
+              <Card>
+                <Card.Img variant="top" src={suggested_profile.img} />
+                <Card.Body>
+                  <Card.Title>{suggested_profile.name}</Card.Title>                 
+                </Card.Body>
+              </Card>  
+              </Col>
+            </Row>
+          </Container>      
         </Jumbotron>
       </Container>
       
@@ -97,6 +142,6 @@ export function App({ initialData }) {
        
 
       } 
-    </div>
+    </ React.Fragment>
   );
 }

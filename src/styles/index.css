@@ -290,10 +290,28 @@ body {
   padding: 1rem 1rem !important;
 }
 
-.jumbotron h1 {
-  text-align: center;
-}
-
 .h1, h1 {
   font-size: 2.0rem !important;
+}
+
+.suggestion_box {
+  height:100px;
+}
+.suggestion_image {
+  height: -webkit-fill-available;
+}
+.input_box {
+  width: 70% !important;
+}
+
+.card-body {
+  padding: 0.50rem !important;
+}
+
+.h5, h5 {
+ font-size: 1rem !important;
+}
+
+.card-title {
+  margin-bottom: 0.2rem !important;
 }
